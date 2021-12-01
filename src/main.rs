@@ -2,7 +2,7 @@ use std::env;
 use std::fs;
 
 mod challenge1;
-use challenge1::count_increases;
+mod challenge2;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -28,7 +28,13 @@ fn main() {
         "1" => {
             let contents: Result<Vec<u32>, _> =
                 contents.lines().map(|x| x.parse()).collect();
-            let result = contents.map(|x| count_increases(&x));
+            let result = contents.as_ref().map(challenge1::count_increases);
+            println!("{:?}", result);
+        }
+        "2" => {
+            let contents: Result<Vec<u32>, _> =
+                contents.lines().map(|x| x.parse()).collect();
+            let result = contents.as_ref().map(challenge2::count_triplet_increases);
             println!("{:?}", result);
         }
         _ => {
