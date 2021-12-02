@@ -20,21 +20,10 @@ impl State {
 
 fn follow_command(command: &str, state: State) -> Result<State, String> {
     let mut iter = command.split(' ');
-    let direction = iter.next();
-    let value = iter.next();
 
-    if direction.is_none() || value.is_none() {
-        return Err(format!("Poorly formed command: {}", command));
-    }
-
-    let direction = direction.unwrap();
-    let value : Result<i32, _> = value.unwrap().parse();
-
-    if value.is_err() {
-        return Err(format!("Poorly formed value: {}", command));
-    }
-
-    let value = value.unwrap();
+    let direction = iter.next().ok_or("Empty command")?;
+    let value = iter.next().ok_or("Value missing")?;
+    let value : i32 = value.parse().map_err(|_| "Cannot parse value")?;
 
     match direction {
         "forward" => {
@@ -64,6 +53,21 @@ mod tests {
             pos: Position(x, y),
             aim: aim,
         }, *state);
+    }
+
+    #[test]
+    fn bad_command() {
+        assert!(follow_command("abc", State::new()).is_err());
+    }
+
+    #[test]
+    fn bad_value() {
+        assert!(follow_command("abc de", State::new()).is_err());
+    }
+
+    #[test]
+    fn bad_direction() {
+        assert!(follow_command("abc 3", State::new()).is_err());
     }
 
     #[test]
