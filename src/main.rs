@@ -1,5 +1,6 @@
 use std::env;
 use std::fs;
+use std::fmt;
 
 mod challenge1;
 mod challenge2;
@@ -9,13 +10,13 @@ mod challenge4;
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    if args.len() < 3 {
-        println!("Usage: <command> <challenge no> <input file name>");
+    if args.len() < 2 {
+        println!("Usage: <command> <challenge no>");
         return;
     }
 
     let challenge_no = &args[1];
-    let filename = &args[2];
+    let filename = format!("input/input-{}.txt", challenge_no);
 
     let contents = fs::read_to_string(filename);
 
