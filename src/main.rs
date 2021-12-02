@@ -4,6 +4,7 @@ use std::fs;
 mod challenge1;
 mod challenge2;
 mod challenge3;
+mod challenge4;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -40,6 +41,9 @@ fn main() {
         }
         "3" => {
             println!("{:?}", challenge3::follow_commands(&contents));
+        }
+        "4" => {
+            println!("{:?}", challenge4::follow_commands(&contents));
         }
         _ => {
             println!("Unknown challenge no.");
