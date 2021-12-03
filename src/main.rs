@@ -35,10 +35,7 @@ fn main() {
             println!("{:?}", challenge1(&contents));
         }
         "2" => {
-            let contents: Result<Vec<u32>, _> =
-                contents.lines().map(|x| x.parse()).collect();
-            let result = contents.as_ref().map(challenge2::count_triplet_increases);
-            println!("{:?}", result);
+            println!("{:?}", challenge2(&contents));
         }
         "3" => {
             println!("{:?}", challenge3::follow_commands(&contents));

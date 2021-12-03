@@ -1,14 +1,23 @@
-pub fn count_triplet_increases(values: &Vec<u32>) -> usize {
+pub fn count_triplet_increases(values: &Vec<u32>) -> u32 {
     let iter_a = values.windows(3);
     let iter_b = values.windows(3).skip(1);
     // This could be more efficient - we don't need to do a sum on
     // every iteration, we could have a running total where we add
     // the new element and subtract the old one.
-    iter_a.zip(iter_b).fold(0, |acc, (a, b)| {
-        let sum_a : u32 = a.iter().sum();
-        let sum_b : u32 = b.iter().sum();
-        acc + if sum_a < sum_b { 1 } else { 0 }
-    })
+    iter_a.zip(iter_b)
+        .filter(|(a, b)| {
+            let sum_a : u32 = a.iter().sum();
+            let sum_b : u32 = b.iter().sum();
+            sum_a < sum_b
+        })
+        .count() as u32
+}
+
+pub fn challenge2(input: &str) -> Result<u32, String> {
+    let lines: Result<Vec<u32>, _> = input.lines().map(str::parse).collect();
+
+    lines.map(|x| count_triplet_increases(&x))
+        .map_err(|_| String::from("Could not parse number"))
 }
 
 #[cfg(test)]
