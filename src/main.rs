@@ -35,7 +35,7 @@ fn main() {
             println!("{:?}", challenge1(&contents));
         }
         "2" => {
-            println!("{:?}", challenge2(&contents));
+            println!("{:?}", challenge2::challenge2(&contents));
         }
         "3" => {
             println!("{:?}", challenge3::follow_commands(&contents));
