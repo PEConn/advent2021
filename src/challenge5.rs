@@ -1,18 +1,26 @@
-pub fn power_consumption(input: &str) -> u32 {
+pub fn most_common_bits(input: &str) -> String {
     // A Vec of zeroes as long as the first line of the file.
-    let zeroes : Vec<u32> = input.lines().next().unwrap().chars().map(|_| 0).collect();
+    let zeroes : Vec<u32> = input.lines().next().unwrap()
+        .chars().map(|_| 0).collect();
 
-    let (bit_counts, line_count) = input.lines()
+    let num_lines = input.lines().count() as u32;
+    let bit_counts = input.lines()
         .map(|x| x.chars())
-        .fold((zeroes, 0), |(acc, line_count), x|
-              (acc.iter().zip(x).map(inc_if_1).collect(), line_count + 1));
+        .fold(zeroes, |acc, x|
+              acc.iter().zip(x).map(inc_if_1).collect());
 
-    // No idea why we need the '&' in the &(line_count) here.
-    let gamma : String = bit_counts.iter()
-        .map(|x| if x > &(line_count / 2) { '1' } else { '0' })
-        .collect();
-    let epsilon : String = bit_counts.iter()
-        .map(|x| if x < &(line_count / 2) { '1' } else { '0' })
+    bit_counts.iter()
+        .map(|x| {
+            // Compare x*2 with num_lines instead of comparing x with
+            // num_lines/2 so we don't have to deal with rounding.
+            if x*2 >= num_lines { '1' } else { '0' }
+        }).collect()
+}
+
+pub fn power_consumption(input: &str) -> u32 {
+    let gamma = most_common_bits(input);
+    let epsilon : String = gamma.chars()
+        .map(|x| if x == '0' { '1' } else { '0' })
         .collect();
 
     let gamma = u32::from_str_radix(&gamma, 2).unwrap();

@@ -7,6 +7,7 @@ mod challenge2;
 mod challenge3;
 mod challenge4;
 mod challenge5;
+mod challenge6;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -49,6 +50,9 @@ fn main() {
         }
         "5" => {
             println!("{:?}", challenge5::power_consumption(&contents));
+        }
+        "6" => {
+            println!("{:?}", challenge6::challenge6(&contents));
         }
         _ => {
             println!("Unknown challenge no.");
