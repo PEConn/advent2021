@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::fmt;
+use crate::challenge1::challenge1;
 
 mod challenge1;
 mod challenge2;
@@ -31,10 +32,7 @@ fn main() {
 
     match challenge_no.as_str() {
         "1" => {
-            let contents: Result<Vec<u32>, _> =
-                contents.lines().map(|x| x.parse()).collect();
-            let result = contents.as_ref().map(challenge1::count_increases);
-            println!("{:?}", result);
+            println!("{:?}", challenge1(&contents));
         }
         "2" => {
             let contents: Result<Vec<u32>, _> =

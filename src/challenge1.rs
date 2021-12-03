@@ -6,6 +6,13 @@ pub fn count_increases(values: &Vec<impl PartialOrd>) -> u32 {
         .count() as u32
 }
 
+pub fn challenge1(input: &str) -> Result<u32, String> {
+    let lines: Result<Vec<u32>, _> = input.lines().map(str::parse).collect();
+
+    lines.map(|x| count_increases(&x))
+        .map_err(|_| String::from("Could not parse number"))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
