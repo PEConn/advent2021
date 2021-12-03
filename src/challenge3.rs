@@ -64,6 +64,7 @@ mod tests {
         assert_eq!(Ok(Displacement(5, 0)), follow_command("forward 5"));
     }
 
+    #[test]
     fn displace_invalid() {
         assert!(follow_command("forward").is_err());
         assert!(follow_command("forward six").is_err());

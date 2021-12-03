@@ -1,9 +1,9 @@
-// TODO: Make generic
-pub fn count_increases(values: &Vec<u32>) -> usize {
-    // Pair each item with the next item, then add 1 for each
-    // pair where the first is smaller than the second.
+pub fn count_increases(values: &Vec<impl PartialOrd>) -> u32 {
+    // Pair each item with the next item, then count the pairs where the first element is smaller
+    // than the second.
     values.iter().zip(values.iter().skip(1))
-        .fold(0, |acc, (a, b)| acc + if a < b { 1 } else { 0 })
+        .filter(|(a, b)| a < b)
+        .count() as u32
 }
 
 #[cfg(test)]
@@ -12,7 +12,7 @@ mod tests {
 
     #[test]
     fn empty() {
-        let input = vec![];
+        let input : Vec<i32> = vec![];
         assert_eq!(0, count_increases(&input));
     }
 
