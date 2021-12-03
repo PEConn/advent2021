@@ -1,10 +1,15 @@
 pub fn most_common_bits(input: &str) -> String {
+    //// Returns a string containing the most common entries for each column.
+    //// Assumes the string only contains '0's and '1's.
+
     // A Vec of zeroes as long as the first line of the file.
     let zeroes : Vec<u32> = input.lines().next().unwrap()
         .chars().map(|_| 0).collect();
 
     let num_lines = input.lines().count() as u32;
-    let bit_counts = input.lines()
+
+    // A Vec containing the counts of the number '1' in each column
+    let bit_counts : Vec<u32> = input.lines()
         .map(|x| x.chars())
         .fold(zeroes, |acc, x|
               acc.iter().zip(x).map(inc_if_1).collect());
@@ -29,8 +34,7 @@ pub fn power_consumption(input: &str) -> u32 {
     gamma * epsilon
 }
 
-fn inc_if_1(state: (&u32, char)) -> u32 {
-    let (count, elem) = state;
+fn inc_if_1((count, elem): (&u32, char)) -> u32 {
     count + if elem == '1' { 1 } else { 0 }
 }
 
