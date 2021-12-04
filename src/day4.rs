@@ -33,17 +33,15 @@ impl Board {
 
     fn has_won(&self, drawn_numbers: &HashSet<i32>) -> bool {
         for x in 0..5 {
-            let matches = self.get_row(x).iter()
-                .filter(|e| drawn_numbers.contains(e))
-                .count();
-            if matches == 5 { return true; }
+            if self.get_row(x).iter().all(|x| drawn_numbers.contains(x)) {
+                return true;
+            }
         }
 
         for y in 0..5 {
-            let matches = self.get_column(y).iter()
-                .filter(|e| drawn_numbers.contains(e))
-                .count();
-            if matches == 5 { return true; }
+            if self.get_column(y).iter().all(|x| drawn_numbers.contains(x)) {
+                return true;
+            }
         }
 
         return false;
@@ -103,9 +101,6 @@ pub fn part1(input: &str) -> Result<i32, String> {
 pub fn part2(input: &str) -> Result<i32, String> {
     let (draws, mut boards) = parse_input(input);
 
-    let num_boards = boards.len();
-    let mut num_wins = 0;
-
     let mut drawn_numbers: HashSet<i32> = HashSet::new();
     for draw in draws.iter() {
         drawn_numbers.insert(*draw);
@@ -125,7 +120,7 @@ pub fn part2(input: &str) -> Result<i32, String> {
 mod tests {
     use super::*;
 
-    const input: &str = "
+    const INPUT: &str = "
 22 13 17 11  0
  8  2 23  4 24
 21  9 14 16  7
@@ -133,7 +128,7 @@ mod tests {
  1 12 20 15 19
 ";
 
-    const given_input: &str = "\
+    const GIVEN_INPUT: &str = "\
 7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
 
 22 13 17 11  0
@@ -163,7 +158,7 @@ mod tests {
 
     #[test]
     fn get_rows() {
-        let board = Board::from(input);
+        let board = Board::from(INPUT);
 
         check_vec_equals(&vec![22, 13, 17, 11,  0], &board.get_row(0));
         check_vec_equals(&vec![ 8,  2, 23,  4, 24], &board.get_row(1));
@@ -174,7 +169,7 @@ mod tests {
 
     #[test]
     fn get_columns() {
-        let board = Board::from(input);
+        let board = Board::from(INPUT);
 
         check_vec_equals(&vec![22,  8, 21,  6,  1], &board.get_column(0));
         check_vec_equals(&vec![13,  2,  9, 10, 12], &board.get_column(1));
@@ -185,7 +180,7 @@ mod tests {
 
     #[test]
     fn has_won() {
-        let board = Board::from(input);
+        let board = Board::from(INPUT);
 
         let mut drawn_numbers = HashSet::new();
 
@@ -198,7 +193,7 @@ mod tests {
 
     #[test]
     fn sum_unmarked_numbers() {
-        let board = Board::from(input);
+        let board = Board::from(INPUT);
 
         let mut drawn_numbers = HashSet::new();
 
@@ -217,11 +212,11 @@ mod tests {
 
     #[test]
     fn given_example_part1() {
-        assert_eq!(Ok(4512), part1(&given_input));
+        assert_eq!(Ok(4512), part1(&GIVEN_INPUT));
     }
 
     #[test]
     fn given_example_part2() {
-        assert_eq!(Ok(1924), part2(&given_input));
+        assert_eq!(Ok(1924), part2(&GIVEN_INPUT));
     }
 }
