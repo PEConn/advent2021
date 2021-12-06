@@ -6,3 +6,4 @@ mod challenge5;
 mod challenge6;
 mod day4;
 mod day5;
+mod day6;
