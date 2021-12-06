@@ -30,7 +30,7 @@ fn follow_command(command: &str) -> Result<Displacement, String> {
     }
 }
 
-fn calculate_position(displacements: &Vec<Displacement>) -> Position {
+fn calculate_position(displacements: &[Displacement]) -> Position {
     displacements.iter().
         fold(Position(0, 0), |pos, dis| Position(pos.0 + dis.0, pos.1 + dis.1))
 }

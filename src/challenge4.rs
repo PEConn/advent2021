@@ -18,6 +18,12 @@ impl State {
     }
 }
 
+impl Default for State {
+    fn default() -> Self {
+        State::new()
+    }
+}
+
 fn follow_command(command: &str, state: State) -> Result<State, String> {
     let mut iter = command.split(' ');
 

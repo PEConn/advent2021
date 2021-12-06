@@ -1,4 +1,4 @@
-fn get_most_common_bit(input: &Vec<&str>, index: usize) -> char {
+fn get_most_common_bit(input: &[&str], index: usize) -> char {
     //// Gives the most common bit at position `index` across all entries in
     //// the vector. Returns '1' on a tie.
     let count = input.len();
@@ -43,8 +43,8 @@ fn get_rating(input: &str, rating: &Rating) -> u32 {
 }
 
 pub fn challenge6(input: &str) -> u32 {
-    let oxygen = get_rating(&input, &Rating::Oxygen);
-    let co2 = get_rating(&input, &Rating::CO2);
+    let oxygen = get_rating(input, &Rating::Oxygen);
+    let co2 = get_rating(input, &Rating::CO2);
     oxygen * co2
 }
 

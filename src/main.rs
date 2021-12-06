@@ -1,6 +1,5 @@
 use std::env;
 use std::fs;
-use std::fmt;
 use crate::challenge1::challenge1;
 
 mod challenge1;

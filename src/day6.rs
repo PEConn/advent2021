@@ -1,14 +1,14 @@
 
 pub fn part1(input: &str) -> Result<i32, String> {
-    Ok(simulate_lanternfish(&input, 80) as i32)
+    Ok(simulate_lanternfish(input, 80) as i32)
 }
 
 pub fn part2(input: &str) -> Result<i64, String> {
-    Ok(simulate_lanternfish(&input, 256))
+    Ok(simulate_lanternfish(input, 256))
 }
 
 fn simulate_lanternfish(input: &str, days: i32) -> i64 {
-    let mut fish = [0 as i64; 9];
+    let mut fish = [0_i64; 9];
     input.split(&[',', '\n'][..])
         .filter(|x| !x.is_empty())
         .map(str::parse)

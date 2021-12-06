@@ -1,4 +1,4 @@
-pub fn count_increases(values: &Vec<impl PartialOrd>) -> u32 {
+pub fn count_increases(values: &[impl PartialOrd]) -> u32 {
     // Pair each item with the next item, then count the pairs where the first element is smaller
     // than the second.
     values.iter().zip(values.iter().skip(1))

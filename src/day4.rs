@@ -44,7 +44,7 @@ impl Board {
             }
         }
 
-        return false;
+        false
     }
 
     fn sum_unmarked_numbers(&self, drawn_numbers: &HashSet<i32>) -> i32 {

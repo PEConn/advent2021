@@ -1,4 +1,4 @@
-pub fn count_triplet_increases(values: &Vec<u32>) -> u32 {
+pub fn count_triplet_increases(values: &[u32]) -> u32 {
     let iter_a = values.windows(3);
     let iter_b = values.windows(3).skip(1);
     // This could be more efficient - we don't need to do a sum on
