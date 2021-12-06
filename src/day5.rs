@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::cmp;
 
 pub fn part1(input: &str) -> Result<i32, String> {
     count_overlaps(input, false)
@@ -21,39 +20,19 @@ fn count_overlaps(input: &str, diagonals: bool) -> Result<i32, String> {
         let x2 : i32 = parts.next().unwrap().parse().unwrap();
         let y2 : i32 = parts.next().unwrap().parse().unwrap();
 
-        let x_min = cmp::min(x1, x2);
-        let x_max = cmp::max(x1, x2);
-        let y_min = cmp::min(y1, y2);
-        let y_max = cmp::max(y1, y2);
+        let x_distance = i32::abs(x2 - x1);
+        let y_distance = i32::abs(y2 - y1);
 
-        if x1 == x2 {
-            for y in y_min..(y_max + 1) {
-                vents.insert((x1, y), *vents.get(&(x1, y)).unwrap_or(&0) + 1);
-            }
-        } else if y1 == y2 {
-            for x in x_min..(x_max + 1) {
-                vents.insert((x, y1), *vents.get(&(x, y1)).unwrap_or(&0) + 1);
-            }
-        } else if diagonals {
-            // Four cases
-            // Diagonals like \
-            // (0, 0) -> (2, 2)
-            // (2, 2) -> (0, 0)
-            // Diagonals like /
-            // (2, 0) -> (0, 2)
-            // (0, 2) -> (2, 0)
-            let steps = x_max - x_min;
+        let x_velocity = (x2 - x1).signum();
+        let y_velocity = (y2 - y1).signum();
 
-            for i in 0..(steps + 1) {
-                let point = if (x1 < x2) == (y1 < y2) {
-                    // Diagonal like \
-                    (x_min + i, y_min + i)
-                } else {
-                    // Diagonal like /
-                    (x_min + i, y_max - i)
-                };
-                vents.insert(point, *vents.get(&point).unwrap_or(&0) + 1);
-            }
+        let steps = i32::max(x_distance, y_distance);
+
+        if x_velocity != 0 && y_velocity != 0 && !diagonals { return; }
+
+        for i in 0..(steps + 1) {
+            let pos = (x1 + i * x_velocity, y1 + i * y_velocity);
+            vents.insert(pos, *vents.get(&pos).unwrap_or(&0) + 1);
         }
     });
 
