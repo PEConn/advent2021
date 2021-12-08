@@ -80,6 +80,9 @@ fn main() {
         "15" => {
             println!("{:?}", day8::part1(&contents));
         }
+        "16" => {
+            println!("{:?}", day8::part2(&contents));
+        }
         _ => {
             println!("Unknown challenge no.");
         }
