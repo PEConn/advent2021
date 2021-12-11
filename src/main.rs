@@ -1,5 +1,7 @@
 use std::env;
 use std::fs;
+use std::path::Path;
+
 use crate::challenge1::challenge1;
 
 mod challenge1;
@@ -15,6 +17,7 @@ mod day7;
 mod day8;
 mod day9;
 mod day10;
+mod day11;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -24,8 +27,23 @@ fn main() {
         return;
     }
 
-    let challenge_no = &args[1];
-    let filename = format!("input/input-{}.txt", challenge_no);
+    let challenge_no: Result<u32, _> = args[1].parse();
+
+    if challenge_no.is_err() {
+        println!("Could not parse challenge number");
+        return;
+    }
+
+    let challenge_no = challenge_no.unwrap();
+
+    // The part 2 challenge may use the input from the preceding part 1 challenge. If we're on a
+    // part 2 (the challenge number is even) and there's no input, use the input from the part 1.
+    let mut filename = format!("input/input-{}.txt", challenge_no);
+
+    if challenge_no % 2 == 0 && !Path::new(&filename).exists() {
+        // Try the file for the previous challenge.
+        filename = format!("input/input-{}.txt", challenge_no - 1);
+    }
 
     let contents = fs::read_to_string(filename);
 
@@ -36,66 +54,72 @@ fn main() {
 
     let contents = contents.unwrap();
 
-    match challenge_no.as_str() {
-        "1" => {
+    match challenge_no {
+        1 => {
             println!("{:?}", challenge1(&contents));
         }
-        "2" => {
+        2 => {
             println!("{:?}", challenge2::challenge2(&contents));
         }
-        "3" => {
+        3 => {
             println!("{:?}", challenge3::follow_commands(&contents));
         }
-        "4" => {
+        4 => {
             println!("{:?}", challenge4::follow_commands(&contents));
         }
-        "5" => {
+        5 => {
             println!("{:?}", challenge5::power_consumption(&contents));
         }
-        "6" => {
+        6 => {
             println!("{:?}", challenge6::challenge6(&contents));
         }
-        "7" => {
+        7 => {
             println!("{:?}", day4::part1(&contents));
         }
-        "8" => {
+        8 => {
             println!("{:?}", day4::part2(&contents));
         }
-        "9" => {
+        9 => {
             println!("{:?}", day5::part1(&contents));
         }
-        "10" => {
+        10 => {
             println!("{:?}", day5::part2(&contents));
         }
-        "11" => {
+        11 => {
             println!("{:?}", day6::part1(&contents));
         }
-        "12" => {
+        12 => {
             println!("{:?}", day6::part2(&contents));
         }
-        "13" => {
+        13 => {
             println!("{:?}", day7::part1(&contents));
         }
-        "14" => {
+        14 => {
             println!("{:?}", day7::part2(&contents));
         }
-        "15" => {
+        15 => {
             println!("{:?}", day8::part1(&contents));
         }
-        "16" => {
+        16 => {
             println!("{:?}", day8::part2(&contents));
         }
-        "17" => {
+        17 => {
             println!("{:?}", day9::part1(&contents));
         }
-        "18" => {
+        18 => {
             println!("{:?}", day9::part2(&contents));
         }
-        "19" => {
+        19 => {
             println!("{:?}", day10::part1(&contents));
         }
-        "20" => {
+        20 => {
             println!("{:?}", day10::part2(&contents));
+        }
+        21 => {
+            println!("{:?}", day11::part1(&contents));
+        }
+        22 => {
+            println!("{:?}", day11::part2(&contents));
         }
         _ => {
             println!("Unknown challenge no.");
