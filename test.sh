@@ -2,7 +2,7 @@
 
 mkdir -p test_results
 
-for i in {1..22}
+for i in {1..24}
 do
   echo "Running $i"
   RUSTFLAGS=-Awarnings cargo --quiet run $i > test_results/$i.txt

@@ -116,6 +116,7 @@ impl Map {
         flashed.len()
     }
 
+    #[allow(dead_code)]
     fn print(&self) {
         for y in 0..self.height {
             for x in 0..self.width {
