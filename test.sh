@@ -2,7 +2,10 @@
 
 mkdir -p test_results
 
-for i in {1..24}
+echo "Compiling"
+RUSTFLAGS=-Awarnings cargo --quiet build
+
+for i in {1..26}
 do
   echo "Running $i"
   RUSTFLAGS=-Awarnings cargo --quiet run $i > test_results/$i.txt
