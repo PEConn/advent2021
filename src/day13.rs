@@ -8,23 +8,26 @@ struct Coord {
 
 impl Coord {
     fn flipped(&self, fold: &Fold) -> Coord {
+        let mut x = self.x;
+        let mut y = self.y;
+
+        // Let's say we're folding (2, 2) along x = 4.
+        // So, (x, y) = (2, 2) and fold_x = 4.
+        // To find the new x, we need the distance between the current x and the fold: (x - fold_x).
+        // Then we subtract that from the fold, giving: fold_x - (x - fold_x).
+        // Which simplifies to: 2*fold_x - x.
+
         match fold {
             Fold::AlongX(fold_x) => {
-                let mut x = self.x;
-
                 if x > *fold_x { x = (*fold_x) * 2 - x; }
-
-                Coord { x, ..*self }
             }
 
             Fold::AlongY(fold_y) => {
-                let mut y = self.y;
-
                 if y > *fold_y { y = (*fold_y) * 2 - y; }
-
-                Coord { y, ..*self }
             }
         }
+
+        Coord { x, y }
     }
 }
 
