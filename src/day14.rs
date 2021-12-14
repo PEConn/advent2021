@@ -67,6 +67,8 @@ pub fn part1(input: &str) -> usize {
 }
 
 fn insert(a: &mut HashMap<char, i64>, b: &HashMap<char, i64>) {
+    //// Inserts all the entries from map `b` into map `a`. If an entry exists in both maps, put the
+    //// sum of both entries in `a`.
     for (key, value) in b {
         *a.entry(*key).or_insert(0) += value;
     }
@@ -75,23 +77,35 @@ fn insert(a: &mut HashMap<char, i64>, b: &HashMap<char, i64>) {
 fn calculate_frequencies(a: char, b: char, rules: &InsertionRules, depth: i32,
         cache: &mut HashMap<(char, char, i32), HashMap<char, i64>>)
                          -> HashMap<char, i64> {
+    //// Returns a map of the frequencies of character present in a string *between* characters `a`
+    //// and `b` when expanded to the given depth.
+    //// The `cache` HashMap is keyed on the triple (`a`, `b`, `depth`) and will be used to not
+    //// repeat calculations that have already taken place.
+
+    // Base case - we don't need to go any further.
     if depth == 0 {
         return HashMap::new();
     }
 
+    // Check whether we've already calculated this.
     let cache_key = (a, b, depth);
     if let Some(frequencies) = cache.get(&cache_key) {
         return frequencies.clone();
     }
 
+    // Find the new character.
     let c = *rules.get(&(a, b)).unwrap();
 
+    // Add all the characters to the left of the new character.
     let mut frequencies =
         calculate_frequencies(a, c, rules, depth - 1, cache);
+    // Add all the characters to the right of the new character.
     insert(&mut frequencies,
            &calculate_frequencies(c, b, rules, depth - 1, cache));
+    // Add the new character.
     *frequencies.entry(c).or_insert(0) += 1;
 
+    // Add the result to the cache.
     cache.insert(cache_key, frequencies.clone());
 
     frequencies
@@ -99,27 +113,24 @@ fn calculate_frequencies(a: char, b: char, rules: &InsertionRules, depth: i32,
 
 pub fn part2(input: &str) -> i64 {
     let (polymer, rules) = parse(input);
-    // 20 steps - 2 seconds.
-    // 21 steps - 5 seconds.
     let steps = 40;
 
     let mut frequencies: HashMap<char, i64> = HashMap::new();
     let mut cache: HashMap<(char, char, i32), HashMap<char, i64>> = HashMap::new();
 
-    polymer.iter().for_each(|c| *frequencies.entry(*c).or_insert(0) += 1);
-
-    polymer.iter().zip(polymer.iter().skip(1))
-        .for_each(|(a, b)| {
-            insert(&mut frequencies,
-                   &calculate_frequencies(*a, *b, &rules, steps, &mut cache))
-        });
-
-    let mut max = i64::MIN;
-    let mut min = i64::MAX;
-    for (_, freq) in frequencies {
-        max = i64::max(max, freq);
-        min = i64::min(min, freq);
+    // Insert the characters in the initial polymer.
+    for c in polymer.iter() {
+        *frequencies.entry(*c).or_insert(0) += 1;
     }
+
+    // Insert the characters in between.
+    for (a, b) in polymer.iter().zip(polymer.iter().skip(1)) {
+        insert(&mut frequencies,
+               &calculate_frequencies(*a, *b, &rules, steps, &mut cache))
+    }
+
+    let max = frequencies.values().max().unwrap();
+    let min = frequencies.values().min().unwrap();
 
     max - min
 }
@@ -174,7 +185,7 @@ CN -> C";
     }
 
     #[test]
-    fn dev() {
+    fn given_example_part2() {
         assert_eq!(2188189693529, part2(&INPUT));
     }
 }
