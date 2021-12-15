@@ -39,11 +39,10 @@ fn main() {
     }
 
     let challenge_no = challenge_no.unwrap();
+    let mut filename = format!("input/input-{}.txt", challenge_no);
 
     // The part 2 challenge may use the input from the preceding part 1 challenge. If we're on a
     // part 2 (the challenge number is even) and there's no input, use the input from the part 1.
-    let mut filename = format!("input/input-{}.txt", challenge_no);
-
     if challenge_no % 2 == 0 && !Path::new(&filename).exists() {
         // Try the file for the previous challenge.
         filename = format!("input/input-{}.txt", challenge_no - 1);
@@ -58,87 +57,38 @@ fn main() {
 
     let contents = contents.unwrap();
 
+    // TODO: Standardize some API for all the challenges.
     match challenge_no {
-        1 => {
-            println!("{:?}", challenge1(&contents));
-        }
-        2 => {
-            println!("{:?}", challenge2::challenge2(&contents));
-        }
-        3 => {
-            println!("{:?}", challenge3::follow_commands(&contents));
-        }
-        4 => {
-            println!("{:?}", challenge4::follow_commands(&contents));
-        }
-        5 => {
-            println!("{:?}", challenge5::power_consumption(&contents));
-        }
-        6 => {
-            println!("{:?}", challenge6::challenge6(&contents));
-        }
-        7 => {
-            println!("{:?}", day4::part1(&contents));
-        }
-        8 => {
-            println!("{:?}", day4::part2(&contents));
-        }
-        9 => {
-            println!("{:?}", day5::part1(&contents));
-        }
-        10 => {
-            println!("{:?}", day5::part2(&contents));
-        }
-        11 => {
-            println!("{:?}", day6::part1(&contents));
-        }
-        12 => {
-            println!("{:?}", day6::part2(&contents));
-        }
-        13 => {
-            println!("{:?}", day7::part1(&contents));
-        }
-        14 => {
-            println!("{:?}", day7::part2(&contents));
-        }
-        15 => {
-            println!("{:?}", day8::part1(&contents));
-        }
-        16 => {
-            println!("{:?}", day8::part2(&contents));
-        }
-        17 => {
-            println!("{:?}", day9::part1(&contents));
-        }
-        18 => {
-            println!("{:?}", day9::part2(&contents));
-        }
-        19 => {
-            println!("{:?}", day10::part1(&contents));
-        }
-        20 => {
-            println!("{:?}", day10::part2(&contents));
-        }
-        21 => {
-            println!("{:?}", day11::part1(&contents));
-        }
-        22 => {
-            println!("{:?}", day11::part2(&contents));
-        }
-        23 => {
-            println!("{:?}", day12::part1(&contents));
-        }
-        24 => {
-            println!("{:?}", day12::part2(&contents));
-        }
-        25 => { println!("{:?}", day13::part1(&contents))}
-        26 => { println!("{}", day13::part2(&contents))}
-        27 => { println!("{}", day14::part1(&contents))}
-        28 => { println!("{}", day14::part2(&contents))}
-        29 => { println!("{}", day15::part1(&contents))}
-        30 => { println!("{}", day15::part2(&contents))}
-        _ => {
-            println!("Unknown challenge no.");
-        }
+        1 => { println!("{:?}", challenge1(&contents)) }
+        2 => { println!("{:?}", challenge2::challenge2(&contents)) }
+        3 => { println!("{:?}", challenge3::follow_commands(&contents)) }
+        4 => { println!("{:?}", challenge4::follow_commands(&contents)) }
+        5 => { println!("{:?}", challenge5::power_consumption(&contents)) }
+        6 => { println!("{:?}", challenge6::challenge6(&contents)) }
+        7 => { println!("{:?}", day4::part1(&contents)) }
+        8 => { println!("{:?}", day4::part2(&contents)) }
+        9 => { println!("{:?}", day5::part1(&contents)) }
+        10 => { println!("{:?}", day5::part2(&contents)) }
+        11 => { println!("{:?}", day6::part1(&contents)) }
+        12 => { println!("{:?}", day6::part2(&contents)) }
+        13 => { println!("{:?}", day7::part1(&contents)) }
+        14 => { println!("{:?}", day7::part2(&contents)) }
+        15 => { println!("{:?}", day8::part1(&contents)) }
+        16 => { println!("{:?}", day8::part2(&contents)) }
+        17 => { println!("{:?}", day9::part1(&contents)) }
+        18 => { println!("{:?}", day9::part2(&contents)) }
+        19 => { println!("{:?}", day10::part1(&contents)) }
+        20 => { println!("{:?}", day10::part2(&contents)) }
+        21 => { println!("{:?}", day11::part1(&contents)) }
+        22 => { println!("{:?}", day11::part2(&contents)) }
+        23 => { println!("{:?}", day12::part1(&contents)) }
+        24 => { println!("{:?}", day12::part2(&contents)) }
+        25 => { println!("{:?}", day13::part1(&contents)) }
+        26 => { println!("{}", day13::part2(&contents)) }
+        27 => { println!("{}", day14::part1(&contents)) }
+        28 => { println!("{}", day14::part2(&contents)) }
+        29 => { println!("{}", day15::part1(&contents)) }
+        30 => { println!("{}", day15::part2(&contents)) }
+        _ => { println!("Unknown challenge no."); }
     }
 }
