@@ -1,6 +1,8 @@
 use std::collections::VecDeque;
 use crate::day16::OperatorLength::{Bits, SubPackets};
 
+// TODO: Give this a go with a parser.
+
 #[derive(Debug, PartialEq)]
 struct Header {
     version: u8,
@@ -27,6 +29,7 @@ impl NumberBody {
     /// appended to the working value and we continue reading. If a chunk starts with a 0,
     /// the nest 4 bits are appended to the working value and we finish reading.
     fn read<I: Iterator<Item = char>>(stream: &mut BitIterator<I>) -> NumberBody {
+        // TODO: Do I need to include <I: Iterator<Item = char>> on every of my read methods?
         let mut value = 0;
         // All but the last bit start with a 1.
         while stream.next().unwrap() {
@@ -115,6 +118,7 @@ impl OperatorBody {
     }
 }
 
+// TODO: Figure out generics a bit better to see if I can make this simpler.
 struct BitIterator<I: Iterator<Item = char>> {
     inner: I,
     next_bits: VecDeque<bool>,
@@ -176,24 +180,18 @@ fn calculate(packet: &Packet) -> u64 {
                 1 => operands.product(),
                 2 => operands.min().unwrap(),
                 3 => operands.max().unwrap(),
-                5 => {
+                5 | 6 | 7 => {
                     let a = operands.next().unwrap();
                     let b = operands.next().unwrap();
                     assert_eq!(None, operands.next());
-                    if a > b { 1 } else { 0 }
+
+                    match packet.header.id {
+                        5 => (a > b) as u64,
+                        6 => (a < b) as u64,
+                        7 => (a == b) as u64,
+                        _ => panic!("Shouldn't happen"),
+                    }
                 },
-                6 => {
-                    let a = operands.next().unwrap();
-                    let b = operands.next().unwrap();
-                    assert_eq!(None, operands.next());
-                    if a < b { 1 } else { 0 }
-                },
-                7 => {
-                    let a = operands.next().unwrap();
-                    let b = operands.next().unwrap();
-                    assert_eq!(None, operands.next());
-                    if a == b { 1 } else { 0 }
-                }
                 x => panic!("Unknown id: {}", x),
             }
         }

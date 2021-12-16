@@ -1,6 +1,7 @@
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashSet};
 
+// TODO: Figure out what requires Ord/Eq and what requires PartialOrd/PartialEq
 #[derive(Debug, Copy, Clone, PartialEq, Hash, Eq, Ord, PartialOrd)]
 struct Coord {
     x: usize,
@@ -28,6 +29,7 @@ impl Map {
         }
     }
 
+    // TODO: Should this be "from" instead? Find some guidelines for when to implement "from".
     fn parse(input: &str) -> Map {
         Map::new(input
             .lines()
@@ -40,9 +42,8 @@ impl Map {
         *self.contents.get(c.y).unwrap().get(c.x).unwrap()
     }
 
+    /// Returns a list of coordinates of all neighbours.
     fn neighbours(&self, c: &Coord) -> Vec<Coord> {
-        //// Returns a list of coordinates of all neighbours.
-
         let mut neighbours : Vec<Coord> = Vec::new();
 
         if c.x > 0 { neighbours.push(Coord::new(c.x - 1, c.y)) }
