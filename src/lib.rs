@@ -1,3 +1,6 @@
+// #[macro_use]
+extern crate lazy_static;
+
 pub mod challenge1;
 pub mod challenge2;
 pub mod challenge3;
@@ -19,3 +22,7 @@ pub mod day15;
 pub mod day16;
 pub mod day17;
 pub mod day18;
+pub mod day19;
+
+mod vector;
+mod day19inputs;
