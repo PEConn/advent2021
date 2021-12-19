@@ -1,3 +1,5 @@
+// Note: To profile, cargo flamegraph --root -- 37
+
 use std::collections::HashSet;
 
 use sscanf::scanf;
