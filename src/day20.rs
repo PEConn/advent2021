@@ -1,5 +1,6 @@
 use std::fmt::{Debug, Formatter, Write};
 use std::str::FromStr;
+use indicatif::ProgressBar;
 
 struct Image {
     contents: Vec<Vec<char>>,
@@ -117,9 +118,14 @@ pub fn part2(input: &str) -> usize {
     let (mut image, algorithm) = parse(input);
     assert_eq!(512, algorithm.len());
 
-    for _ in 0..50 {
+    let iterations = 50;
+
+    let bar = ProgressBar::new(iterations);
+    for _ in 0..iterations {
         image = process_image(&image, &algorithm);
+        bar.inc(1);
     }
+    bar.finish();
 
     count_lit_pixels(&image)
 }
