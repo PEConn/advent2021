@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 pub const INPUT_LESS : &str = "\
 --- scanner 0 ---
 404,-588,-901
@@ -81,6 +82,7 @@ pub const INPUT_LESS : &str = "\
 -652,-548,-490
 30,-46,-14";
 
+#[allow(dead_code)]
 pub const INPUT : &str = "\
 --- scanner 0 ---
 404,-588,-901

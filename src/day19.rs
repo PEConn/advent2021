@@ -107,7 +107,6 @@ fn combine_scanners(scanners: &mut Vec<Scanner>) -> (Scanner, Vec<Vector>) {
                 println!("Found match with {}", i);
 
                 scanner_positions.push(offset);
-
                 indexes_to_remove.push(i);
 
                 // add other to base.
