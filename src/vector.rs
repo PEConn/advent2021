@@ -1,7 +1,8 @@
+use std::cmp::Ordering;
 use lazy_static::lazy_static;
 use std::hash::{Hash, Hasher};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, Eq)]
 pub struct Vector {
     x: i32,
     y: i32,
@@ -12,6 +13,25 @@ impl Hash for Vector {
     fn hash<H: Hasher>(&self, state: &mut H) {
         // This reduces runtime by ~20%.
         state.write_i32(self.x ^ self.y ^ self.z);
+    }
+}
+
+// Since I implemented Hash, I also need to implement these...
+impl PartialEq for Vector {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y && self.z == other.z
+    }
+}
+
+impl Ord for Vector {
+    fn cmp(&self, other: &Self) -> Ordering {
+        (self.x, self.y, self.z).cmp(&(other.x, other.y, other.z))
+    }
+}
+
+impl PartialOrd for Vector {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -88,21 +108,16 @@ impl VectorTransform {
     }
 }
 
-
 lazy_static! {
-    static ref AXES: Vec<Vector> = {
-        // TODO: Does this *need* to be a static_ref?
-        let mut axes = Vec::new();
+    pub static ref AXES: Vec<Vector> = vec![
+        Vector::new( 1,  0,  0),
+        Vector::new(-1,  0,  0),
+        Vector::new( 0,  1,  0),
+        Vector::new( 0, -1,  0),
+        Vector::new( 0,  0,  1),
+        Vector::new( 0,  0, -1),
+    ];
 
-        axes.push(Vector::new( 1,  0,  0));
-        axes.push(Vector::new(-1,  0,  0));
-        axes.push(Vector::new( 0,  1,  0));
-        axes.push(Vector::new( 0, -1,  0));
-        axes.push(Vector::new( 0,  0,  1));
-        axes.push(Vector::new( 0,  0, -1));
-
-        axes
-    };
     pub static ref ROTATIONS: Vec<VectorTransform> = {
         let mut v = Vec::new();
 

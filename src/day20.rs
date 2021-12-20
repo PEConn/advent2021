@@ -16,7 +16,7 @@ impl Image {
                 return '#' == *c;
             }
         }
-        return '#' == self.bg;
+        '#' == self.bg
     }
 
     fn get_num(&self, x: i32, y: i32) -> usize {
@@ -60,11 +60,10 @@ impl FromStr for Image {
 impl Debug for Image {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         self.contents.iter()
-            .map(|row| {
+            .try_for_each(|row| {
                 f.write_str(row.iter().collect::<String>().as_str())?;
                 f.write_char('\n')
             })
-            .collect()
     }
 }
 
@@ -72,7 +71,7 @@ fn process_image(image: &Image, algorithm: &str) -> Image {
     let mut new_image : Vec<Vec<char>> = Vec::new();
 
     let bg = if image.bg == '.' {
-        algorithm.chars().nth(0).unwrap()
+        algorithm.chars().next().unwrap()
     } else {
         algorithm.chars().nth(0b111111111).unwrap()
     };
