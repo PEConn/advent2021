@@ -27,3 +27,4 @@ pub mod day19;
 mod vector;
 mod day19inputs;
 pub mod day20;
+pub mod day21;
