@@ -39,8 +39,6 @@ pub fn part1(input: &str) -> usize {
                 }
             }
         }
-
-        println!("{:?}", (x1, x2, y1, y2, z1, z2));
     }
 
     state.iter().flatten().flatten().filter(|e| **e).count()
@@ -98,6 +96,13 @@ impl Cube {
     fn volume(&self) -> u64 {
         ((self.x2 + 1 - self.x1) * (self.y2 + 1 - self.y1) * (self.z2 + 1 - self.z1)) as u64
     }
+
+    fn intersection(a: &Cube, b: &Cube) -> Option<Cube> {
+        let (x1, x2) = range_overlap(&(a.x1, a.x2), &(b.x1, b.x2))?;
+        let (y1, y2) = range_overlap(&(a.y1, a.y2), &(b.y1, b.y2))?;
+        let (z1, z2) = range_overlap(&(a.z1, a.z2), &(b.z1, b.z2))?;
+        Some(Cube::new(x1, x2, y1, y2, z1, z2))
+    }
 }
 
 type Range = (i64, i64);
@@ -119,13 +124,7 @@ fn range_overlap(a: &Range, b: &Range) -> Option<Range> {
     Some((max(a.0, b.0), min(a.1, b.1)))
 }
 
-fn cube_overlap(a: &Cube, b: &Cube) -> Option<Cube> {
-    let (x1, x2) = range_overlap(&(a.x1, a.x2), &(b.x1, b.x2))?;
-    let (y1, y2) = range_overlap(&(a.y1, a.y2), &(b.y1, b.y2))?;
-    let (z1, z2) = range_overlap(&(a.z1, a.z2), &(b.z1, b.z2))?;
-    Some(Cube::new(x1, x2, y1, y2, z1, z2))
-}
-
+/// Gives the volume covered by the combination of the given cubes.
 fn total_volume(cubes: &[Cube]) -> u64 {
     let mut x_map: Vec<i64> = cubes.iter()
         .map(|cube| vec![cube.x1, cube.x2 + 1])
@@ -183,17 +182,6 @@ fn total_volume(cubes: &[Cube]) -> u64 {
         }
     }
 
-    // for y_index in 0..4 {
-    //     for x_index in 0..5 {
-    //         if covered[x_index][y_index][0] {
-    //             print!("#");
-    //         } else {
-    //             print!(".");
-    //         }
-    //     }
-    //     println!();
-    // }
-
     total_area
 }
 
@@ -217,7 +205,7 @@ pub fn part2(input: &str) -> u64 {
             let mut overlaps = Vec::new();
 
             for cube in cubes.iter() {
-                if let Some(overlap) = cube_overlap(cube, &new_cube) {
+                if let Some(overlap) = Cube::intersection(cube, &new_cube) {
                     overlaps.push(overlap);
                 }
             }
@@ -314,30 +302,31 @@ off x=-22..28,y=0..0,z=0..0";
     }
 
     #[test]
-    fn test_cube_overlap() {
-        assert_eq!(None, cube_overlap(
+    fn test_cube_intersection() {
+        assert_eq!(None, Cube::intersection(
             &Cube::new(0, 5, 0, 5, 1, 2),
             &Cube::new(7, 9, 7, 9, 1, 2)
         ));
 
         assert_eq!(Some(Cube::new(3, 5, 3, 5, 1, 2)),
-                   cube_overlap(
+                   Cube::intersection(
                         &Cube::new(0, 5, 0, 5, 1, 2),
                         &Cube::new(3, 9, 3, 9, 1, 2)
                     ));
 
         assert_eq!(Some(Cube::new(3, 4, 3, 4, 1, 2)),
-                   cube_overlap(
+                   Cube::intersection(
                        &Cube::new(0, 5, 0, 5, 1, 2),
                        &Cube::new(3, 4, 3, 4, 1, 2)
                    ));
 
         assert_eq!(Some(Cube::new(5, 5, 5, 5, 0, 0)),
-                   cube_overlap(
+                   Cube::intersection(
                        &Cube::new(5, 10, 5, 10, 0, 0),
                        &Cube::new(0, 5, 0, 5, 0, 0)
                    ));
     }
+
 
     #[test]
     fn test_total_area() {
