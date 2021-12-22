@@ -148,13 +148,7 @@ fn take_turn(universes: &UniverseFrequencies, player: Player) -> UniverseFrequen
 }
 
 fn all_won(universes: &UniverseFrequencies) -> bool {
-    for (universe, _) in universes.iter() {
-        if !universe.has_been_won(21) {
-            return false;
-        }
-    }
-
-    true
+    universes.iter().all(|(u, _)| u.has_been_won(21))
 }
 
 fn part2(p1_pos: i32, p2_pos: i32) -> (u64, u64) {
