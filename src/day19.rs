@@ -1,4 +1,4 @@
-// Note: To profile, cargo flamegraph --root -- 37
+// Note: To profile, cargo flamegraph --root --output fg.svg -- 37
 
 use std::collections::HashSet;
 

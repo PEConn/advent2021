@@ -29,6 +29,7 @@ mod day19;
 mod vector;
 mod day20;
 mod day22;
+mod day23;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -108,6 +109,7 @@ fn main() {
         40 => { println!("{}", day20::part2(&contents)) }
         43 => { println!("{}", day22::part1(&contents)) }
         44 => { println!("{}", day22::part2(&contents)) }
+        45 => { day23::part1()}
         _ => { println!("Unknown challenge no."); }
     }
 }
