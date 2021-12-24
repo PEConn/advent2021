@@ -114,14 +114,11 @@ impl State {
     }
 
     fn new_state(&self, old: &Pos, new: &Pos) -> State {
-        let mut new_positions : HashMap<Pos, Type> = HashMap::new();
+        let mut new_positions = self.positions.clone();
 
-        for (pos, t) in self.positions.iter() {
-            if pos == old {
-                new_positions.insert(*new, *t);
-            } else {
-                new_positions.insert(*pos, *t);
-            }
+        if old != new {
+            let t = new_positions.remove(old).unwrap();
+            new_positions.insert(*new, t);
         }
 
         State {
@@ -130,7 +127,7 @@ impl State {
     }
 
     /// Is the amphipod at its destination?
-    fn at_destination(&self, pos: &Pos) -> bool {
+    fn at_destination(&self, pos: &Pos, room_size: u8) -> bool {
         if pos.y == 0 { return false; }
 
         if let Some(pod) = self.positions.get(pos) {
@@ -138,11 +135,14 @@ impl State {
                 return false;
             }
 
-            if pos.y == 2 {
-                return true;
-            } else if pos.y == 1 {
-                return self.at_destination(&Pos::new(pos.x, pos.y + 1));
+            // Ensure this cell and all those below are filled with the right type of pod.
+            for y in pos.y..(room_size + 1) {
+                if self.positions.get(&Pos::new(pos.x, y)) != Some(pod) {
+                    return false;
+                }
             }
+
+            return true;
         }
 
         return false;
@@ -155,9 +155,9 @@ impl State {
     /// Checks whether a pod can move into that room. It will return None if the room contains a
     /// pod that should not end up there. If the room can be moved into, it returns the y value
     /// the pod will end up at.
-    fn room_open(&self, t: &Type) -> Option<u8> {
-        for i in 0..2 {
-            let y = 2 - i;
+    fn room_open(&self, t: &Type, room_size: u8) -> Option<u8> {
+        for i in 0..room_size {
+            let y = room_size - i;
             let pos = Pos::new(t.room_x(), y);
 
             // Find the lowest empty room.
@@ -188,16 +188,16 @@ impl State {
     }
 
     /// Returns possible states resulting from the pod at the given position moving.
-    fn possible_moves(&self, pos: &Pos) -> Vec<(u32, State)> {
+    fn possible_moves(&self, pos: &Pos, room_size: u8) -> Vec<(u32, State)> {
         let mut possible_states: Vec<(u32, State)> = Vec::new();
 
-        if self.at_destination(pos) { return possible_states; }
+        if self.at_destination(pos, room_size) { return possible_states; }
 
         let pod = self.positions.get(pos).unwrap();
 
         if pos.y == 0 {
             // The pod can only move into its destination.
-            if let Some(y) = self.room_open(pod) {
+            if let Some(y) = self.room_open(pod, room_size) {
                 // Check the path between pos.x and room.x is clear.
                 if let Some(x_dist) = self.clear_path(pos.x, pod.room_x()) {
                     let dest = Pos::new(pod.room_x(), y);
@@ -226,9 +226,9 @@ impl State {
         possible_states
     }
 
-    fn all_possible_moves(&self) -> Vec<(u32, State)> {
+    fn all_possible_moves(&self, room_size: u8) -> Vec<(u32, State)> {
         self.positions.iter()
-            .map(|(pos, _)| self.possible_moves(pos))
+            .map(|(pos, _)| self.possible_moves(pos, room_size))
             .flatten()
             .collect()
     }
@@ -285,7 +285,7 @@ impl Ord for SearchState {
     }
 }
 
-fn search(state: &State) {
+fn search(state: &State, room_size: u8) {
     let mut costs: HashMap<State, u32> = HashMap::new();
     let mut heap = BinaryHeap::new();
 
@@ -311,7 +311,7 @@ fn search(state: &State) {
         if cost > *costs.get(&state).unwrap_or(&u32::MAX) { continue; }
 
         // For each new state we can get to...
-        for (travel_cost, new_state) in state.all_possible_moves() {
+        for (travel_cost, new_state) in state.all_possible_moves(room_size) {
             let new_cost = cost + travel_cost;
             // let tentative_cost = cost + travel_cost;
             // let new_cost = cost + travel_cost + new_state.distance_estimate();
@@ -337,7 +337,77 @@ pub fn part1() {
     use crate::day23::Type::{A, B, C, D};
 
     let state = State::new(C, C, A, A, B, D, D, B);
-    search(&state);
+    search(&state, 2);
+}
+
+pub fn part2() {
+    use crate::day23::Type::{A, B, C, D};
+
+    // #############
+    // #...........#
+    // ###C#A#B#D###
+    //   #D#C#B#A#
+    //   #D#B#A#C#
+    //   #C#A#D#B#
+    //   #########
+
+    let state = State {
+        positions: HashMap::from([
+            (Pos::new(2, 1), C),
+            (Pos::new(2, 2), D),
+            (Pos::new(2, 3), D),
+            (Pos::new(2, 4), C),
+
+            (Pos::new(4, 1), A),
+            (Pos::new(4, 2), C),
+            (Pos::new(4, 3), B),
+            (Pos::new(4, 4), A),
+
+            (Pos::new(6, 1), B),
+            (Pos::new(6, 2), B),
+            (Pos::new(6, 3), A),
+            (Pos::new(6, 4), D),
+
+            (Pos::new(8, 1), D),
+            (Pos::new(8, 2), A),
+            (Pos::new(8, 3), C),
+            (Pos::new(8, 4), B),
+        ])
+    };
+
+    // #############
+    // #...........#
+    // ###B#C#B#D###
+    //   #D#C#B#A#
+    //   #D#B#A#C#
+    //   #A#D#C#A#
+    //   #########
+
+    // let state = State {
+    //     positions: HashMap::from([
+    //         (Pos::new(2, 1), B),
+    //         (Pos::new(2, 2), D),
+    //         (Pos::new(2, 3), D),
+    //         (Pos::new(2, 4), A),
+    //
+    //         (Pos::new(4, 1), C),
+    //         (Pos::new(4, 2), C),
+    //         (Pos::new(4, 3), B),
+    //         (Pos::new(4, 4), D),
+    //
+    //         (Pos::new(6, 1), B),
+    //         (Pos::new(6, 2), B),
+    //         (Pos::new(6, 3), A),
+    //         (Pos::new(6, 4), C),
+    //
+    //         (Pos::new(8, 1), D),
+    //         (Pos::new(8, 2), A),
+    //         (Pos::new(8, 3), C),
+    //         (Pos::new(8, 4), A),
+    //     ])
+    // };
+
+    search(&state, 4);
 }
 
 #[cfg(test)]
@@ -354,14 +424,14 @@ mod test {
         //   #########
         let state = State::new(B, A, D, D, C, C, B, A);
 
-        assert_eq!(false, state.at_destination(&Pos::new(2, 1)));
-        assert_eq!(true, state.at_destination(&Pos::new(2, 2)));
-        assert_eq!(false, state.at_destination(&Pos::new(4, 1)));
-        assert_eq!(false, state.at_destination(&Pos::new(4, 2)));
-        assert_eq!(true, state.at_destination(&Pos::new(6, 1)));
-        assert_eq!(true, state.at_destination(&Pos::new(6, 2)));
-        assert_eq!(false, state.at_destination(&Pos::new(8, 1)));
-        assert_eq!(false, state.at_destination(&Pos::new(8, 2)));
+        assert_eq!(false, state.at_destination(&Pos::new(2, 1), 2));
+        assert_eq!(true, state.at_destination(&Pos::new(2, 2), 2));
+        assert_eq!(false, state.at_destination(&Pos::new(4, 1), 2));
+        assert_eq!(false, state.at_destination(&Pos::new(4, 2), 2));
+        assert_eq!(true, state.at_destination(&Pos::new(6, 1), 2));
+        assert_eq!(true, state.at_destination(&Pos::new(6, 2), 2));
+        assert_eq!(false, state.at_destination(&Pos::new(8, 1), 2));
+        assert_eq!(false, state.at_destination(&Pos::new(8, 2), 2));
     }
 
     #[test]
@@ -380,10 +450,10 @@ mod test {
             ])
         };
 
-        assert_eq!(None, state.room_open(&A));
-        assert_eq!(Some(2), state.room_open(&B));
-        assert_eq!(Some(1), state.room_open(&C));
-        assert_eq!(None, state.room_open(&D));
+        assert_eq!(None, state.room_open(&A, 2));
+        assert_eq!(Some(2), state.room_open(&B, 2));
+        assert_eq!(Some(1), state.room_open(&C, 2));
+        assert_eq!(None, state.room_open(&D, 2));
     }
 
     #[test]
@@ -439,15 +509,15 @@ mod test {
             ])
         };
 
-        let moves = state.possible_moves(&Pos::new(0, 0));
+        let moves = state.possible_moves(&Pos::new(0, 0), 2);
         assert_eq!(1, moves.len());
         assert_eq!(700, moves[0].0);
 
-        let moves = state.possible_moves(&Pos::new(7, 0));
+        let moves = state.possible_moves(&Pos::new(7, 0), 2);
         assert_eq!(1, moves.len());
         assert_eq!(7, moves[0].0);
 
-        assert_eq!(0, state.possible_moves(&Pos::new(10, 0)).len());
+        assert_eq!(0, state.possible_moves(&Pos::new(10, 0), 2).len());
     }
 
     #[test]
@@ -467,13 +537,13 @@ mod test {
         };
 
         // C is already in its final position.
-        assert_eq!(0, state.possible_moves(&Pos::new(6, 2)).len());
+        assert_eq!(0, state.possible_moves(&Pos::new(6, 2), 2).len());
 
         // The bottom B can't get past the top one.
-        assert_eq!(0, state.possible_moves(&Pos::new(2, 2)).len());
+        assert_eq!(0, state.possible_moves(&Pos::new(2, 2), 2).len());
 
         // The top B can go to 3 different spots.
-        assert_eq!(3, state.possible_moves(&Pos::new(2, 1)).len());
+        assert_eq!(3, state.possible_moves(&Pos::new(2, 1), 2).len());
     }
 
     #[test]
@@ -485,13 +555,13 @@ mod test {
         //   #########
         let state = State::new(B, A, C, D, B, C, D, A);
 
-        search(&state);
+        search(&state, 2);
     }
 
     #[test]
     fn part1() {
         let state = State::new(C, C, A, A, B, D, D, B);
-        search(&state);
+        search(&state, 2);
     }
 
     #[test]
@@ -509,6 +579,6 @@ mod test {
                 (Pos::new(8, 2), B),  // 22755, 24216, 23980, 469, 7324
             ])
         };
-        search(&state);
+        search(&state, 2);
     }
 }

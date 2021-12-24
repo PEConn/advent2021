@@ -1,6 +1,8 @@
 use std::env;
 use std::fs;
 use std::path::Path;
+use std::time::SystemTime;
+use advent2021::{day21, day24};
 
 use crate::challenge1::challenge1;
 
@@ -64,6 +66,7 @@ fn main() {
     }
 
     let contents = contents.unwrap();
+    let before = SystemTime::now();
 
     // TODO: Standardize some API for all the challenges.
     match challenge_no {
@@ -107,9 +110,15 @@ fn main() {
         38 => { println!("{}", day19::part2(&contents)) }
         39 => { println!("{}", day20::part1(&contents)) }
         40 => { println!("{}", day20::part2(&contents)) }
+        41 => { println!("{}", day21::part1(6, 9)) }
+        42 => { println!("{:?}", day21::part2(6, 9)) }
         43 => { println!("{}", day22::part1(&contents)) }
         44 => { println!("{}", day22::part2(&contents)) }
         45 => { day23::part1()}
+        46 => { day23::part2()}
+        47 => { day24::part1(&contents) }
         _ => { println!("Unknown challenge no."); }
     }
+
+    println!("{:?}", SystemTime::now().duration_since(before).unwrap())
 }

@@ -151,7 +151,7 @@ fn all_won(universes: &UniverseFrequencies) -> bool {
     universes.iter().all(|(u, _)| u.has_been_won(21))
 }
 
-fn part2(p1_pos: i32, p2_pos: i32) -> (u64, u64) {
+pub fn part2(p1_pos: i32, p2_pos: i32) -> (u64, u64) {
     let mut universes: UniverseFrequencies = HashMap::new();
     universes.insert(GameState::new(p1_pos, p2_pos), 1);
 
