@@ -2,7 +2,7 @@ use std::env;
 use std::fs;
 use std::path::Path;
 use std::time::SystemTime;
-use advent2021::{day21, day24};
+use advent2021::{day21, day24, day25};
 
 use crate::challenge1::challenge1;
 
@@ -117,6 +117,7 @@ fn main() {
         45 => { day23::part1()}
         46 => { day23::part2()}
         47 => { day24::part1(&contents) }
+        49 => { println!("{}", day25::part1(&contents)) }
         _ => { println!("Unknown challenge no."); }
     }
 

@@ -305,44 +305,4 @@ mul y x";
             }
         }
     }
-
-    #[test]
-    fn test_sanity() {
-        let mut best_for_z_at_position: HashMap<(usize, Int), u64> = HashMap::new();
-        let mut possible_z : HashSet<Int> = HashSet::from([0]);
-
-        for n in 0..6 {
-            let mut pow_ten = 1;
-            let mut next_possible_z = HashSet::new();
-
-            for i in 1..10 {
-                for z in possible_z.iter() {
-                    let next_z = ((n as Int) * i * z) as Int;
-
-                    if n == 0 {
-                        best_for_z_at_position.insert((n, next_z), i as u64);
-                    } else {
-                        let prev = best_for_z_at_position.get(&(n - 1, *z)).unwrap();
-
-                        let to_insert = (i as u64) * pow_ten + prev;
-                        println!("Adding {} to {}: {}", i, prev, to_insert);
-                        best_for_z_at_position.insert((n, next_z), to_insert);
-                    }
-
-                    next_possible_z.insert(next_z);
-                }
-
-            }
-
-            pow_ten *= 10;
-
-            possible_z = next_possible_z;
-        }
-
-        for ((n, z), input) in best_for_z_at_position {
-            if n == 3 {
-                println!("{}", input);
-            }
-        }
-    }
 }
