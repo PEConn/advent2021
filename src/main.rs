@@ -4,10 +4,7 @@ use std::path::Path;
 use std::time::SystemTime;
 use advent2021::{day21, day24, day25};
 
-use crate::challenge1::challenge1;
-
-mod challenge1;
-mod challenge2;
+mod day1;
 mod challenge3;
 mod challenge4;
 mod challenge5;
@@ -70,8 +67,8 @@ fn main() {
 
     // TODO: Standardize some API for all the challenges.
     match challenge_no {
-        1 => { println!("{:?}", challenge1(&contents)) }
-        2 => { println!("{:?}", challenge2::challenge2(&contents)) }
+        1 => { println!("{:?}", day1::part1(&contents)) }
+        2 => { println!("{:?}", day1::part2(&contents)) }
         3 => { println!("{:?}", challenge3::follow_commands(&contents)) }
         4 => { println!("{:?}", challenge4::follow_commands(&contents)) }
         5 => { println!("{:?}", challenge5::power_consumption(&contents)) }

@@ -145,7 +145,7 @@ impl State {
             return true;
         }
 
-        return false;
+        false
     }
 
     fn is_finished(&self) -> bool {
@@ -184,7 +184,7 @@ impl State {
                 return false;
             }
         }
-        return true;
+        true
     }
 
     /// Returns possible states resulting from the pod at the given position moving.
@@ -207,19 +207,17 @@ impl State {
                     possible_states.push((cost, self.new_state(pos, &dest)));
                 }
             }
-        } else {
-            if self.can_leave(pos) {
-                for x in [0, 1, 3, 5, 7, 9, 10] {
-                    // Check nothing is already occupying that spot.
-                    if self.positions.contains_key(&Pos::new(x, 0)) { continue; }
+        } else if self.can_leave(pos) {
+            for x in [0, 1, 3, 5, 7, 9, 10] {
+                // Check nothing is already occupying that spot.
+                if self.positions.contains_key(&Pos::new(x, 0)) { continue; }
 
-                    // Check there's a clear path to that spot.
-                    if let Some(x_dist) = self.clear_path(pos.x, x) {
-                        let dest = Pos::new(x, 0);
-                        let cost = ((pos.y + x_dist) as u32) * pod.cost();
+                // Check there's a clear path to that spot.
+                if let Some(x_dist) = self.clear_path(pos.x, x) {
+                    let dest = Pos::new(x, 0);
+                    let cost = ((pos.y + x_dist) as u32) * pod.cost();
 
-                        possible_states.push((cost, self.new_state(pos, &dest)));
-                    }
+                    possible_states.push((cost, self.new_state(pos, &dest)));
                 }
             }
         }
@@ -248,7 +246,7 @@ impl State {
                 return None;
             }
         }
-        return Some(x_max - x_min);
+        Some(x_max - x_min)
     }
 
     /// Gives a lower bound on the cost between the current state and the finished state.
